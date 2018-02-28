@@ -53,19 +53,21 @@ module.exports = {
 		return dragon
 	},
 	fight: function(D1, D2) {
-		let d1hp = D1.level * 10 + (D1.con * 5)
-		let d2hp = D2.level * 10 + (D2.con * 5)
+		let d1hp = D1.level * 10 + (D1.con * 4)
+		let d2hp = D2.level * 10 + (D2.con * 4)
 
 		if(DEBUG) console.log('COMBAT START')
 		if(DEBUG) console.log(`HP: D1 [ ${d1hp} ] D2 [ ${d2hp} ]`)
-		const d1strco = ( D1.str / ( D1.str + D2.str ) ) * 6
-		const d2strco = ( D2.str / ( D1.str + D2.str ) ) * 6
 
-		const d1intco = ( D1.int / ( D1.int + D2.int ) ) * 6
-		const d2intco = ( D2.int / ( D1.int + D2.int ) ) * 6
+		// Strength and intelligence coefficients
+		const d1strco = Math.floor(( D1.str / ( D1.str + D2.str ) ) * 6)
+		const d2strco = Math.floor(( D2.str / ( D1.str + D2.str ) ) * 6)
 
-		const d1bonus = ( D1.wlp / D2.agl ) * 2 
-		const d2bonus = ( D2.wlp / D1.agl ) * 2
+		const d1intco = Math.floor(( D1.int / ( D1.int + D2.int ) ) * 6)
+		const d2intco = Math.floor(( D2.int / ( D1.int + D2.int ) ) * 6)
+
+		const d1bonus = 1 + (D1.wlp / ( D1.wlp + D2.agl ))
+		const d2bonus = 1 + (D2.wlp / ( D2.wlp + D1.agl ))
 
 		if(DEBUG) console.log(`STR: D1 [ ${d1strco} ] D2 [ ${d2strco} ]`)
 		if(DEBUG) console.log(`INT: D1 [ ${d1intco} ] D2 [ ${d2intco} ]`)
@@ -90,8 +92,8 @@ module.exports = {
 			let d1 = 0
 			let d2 = 0
 
-			const d1die = Math.random() * 10
-			const d2die = Math.random() * 10
+			const d1die = Math.floor(Math.random() * 10)
+			const d2die = Math.floor(Math.random() * 10)
 
 			if(DEBUG) console.log(`DICE: D1 [ ${d1die} ] D2 [ ${d2die} ]`)
 
@@ -109,8 +111,8 @@ module.exports = {
 
 			if(DEBUG) console.log(`DAMAGE: D1 [ ${d1} ] D2 [ ${d2} ]`)
 
-			d1hp -= (d2 * d2bonus) * (D2.level / 10)
-			d2hp -= (d1 * d1bonus) * (D1.level / 10)
+			d1hp -= (15 + 5 * d2) * d2bonus
+			d2hp -= (15 + 5 * d1) * d1bonus
 
 			result.phases.push({ type, d1, d2, d1die, d2die })
 
